@@ -1,454 +1,504 @@
-# 🪟 Windows Installation Guide for eva-tk
+# 🪟 Guía de Instalación para Windows - eva-tk
 
-Complete guide for setting up and using eva-tk on Windows.
+Guía completa para configurar y usar eva-tk en Windows.
 
-## 📋 Prerequisites
+## 📋 Requisitos Previos
 
-### 1. Install Node.js
+### 1. Instalar Node.js
 
-**Download Node.js (LTS version recommended):**
-- Visit: https://nodejs.org/
-- Download the Windows Installer (.msi)
-- Run the installer and follow the prompts
-- Accept the default options
+**Descargar Node.js (se recomienda versión LTS):**
+- Visitar: https://nodejs.org/
+- Descargar el Instalador de Windows (.msi)
+- Ejecutar el instalador y seguir las instrucciones
+- Aceptar las opciones predeterminadas
 
-**Verify installation:**
+**Verificar instalación:**
 ```cmd
 node --version
 npm --version
 ```
 
-You should see version numbers like:
+Deberías ver números de versión como:
 ```
 v20.11.0
 10.2.4
 ```
 
-### 2. Install Git (Optional but recommended)
+### 2. Instalar Git (Opcional pero recomendado)
 
-**Download Git:**
-- Visit: https://git-scm.com/download/win
-- Download and run the installer
-- Use default options
+**Descargar Git:**
+- Visitar: https://git-scm.com/download/win
+- Descargar y ejecutar el instalador
+- Usar opciones predeterminadas
 
-**Verify installation:**
+**Verificar instalación:**
 ```cmd
 git --version
 ```
 
-## 🚀 Installing eva-tk
+## 🚀 Instalando eva-tk
 
-### Option 1: Clone from GitHub (Recommended)
+### Opción 1: Clonar desde GitHub (Recomendado)
 
 ```cmd
-# Navigate to your preferred directory
-cd C:\Users\YourUsername\Documents
+# Navegar a tu directorio preferido
+cd C:\Users\TuNombreDeUsuario\Documents
 
-# Clone the repository
+# Clonar el repositorio
 git clone https://github.com/Drko99-0/eva-tk.git
 
-# Navigate into the directory
+# Navegar al directorio
 cd eva-tk
 
-# Install dependencies
+# Instalar dependencias
 npm install
 
-# Build the project
+# Compilar el proyecto
 npm run build
 ```
 
-### Option 2: Download ZIP
+### Opción 2: Descargar ZIP
 
-1. Download the ZIP from GitHub
-2. Extract to a folder (e.g., `C:\Users\YourUsername\Documents\eva-tk`)
-3. Open Command Prompt or PowerShell
-4. Navigate to the folder:
+1. Descargar el ZIP desde GitHub
+2. Extraer a una carpeta (ej., `C:\Users\TuNombreDeUsuario\Documents\eva-tk`)
+3. Abrir Command Prompt o PowerShell
+4. Navegar a la carpeta:
    ```cmd
-   cd C:\Users\YourUsername\Documents\eva-tk
+   cd C:\Users\TuNombreDeUsuario\Documents\eva-tk
    ```
-5. Install and build:
+5. Instalar y compilar:
    ```cmd
    npm install
    npm run build
    ```
 
-## 🎯 Quick Start
+## 🎯 Inicio Rápido
 
-### Find Your Chrome Profile
+### Encontrar tu Perfil de Chrome
 
-First, identify which Chrome profile has the eva-tk token:
+Primero, identifica qué perfil de Chrome tiene el token eva-tk:
 
 ```cmd
 npm run dev -- profiles
 ```
 
-This will show something like:
+Esto mostrará algo como:
 ```
-🔍 Detected Chrome Profiles:
+🔍 Perfiles de Chrome Detectados:
 
-  ✓ Active Default
+  ✓ Activo Default
      C:\Users\Idat\AppData\Local\Google\Chrome\User Data\Default\Local Storage\leveldb
 
-  ✓ Active Profile 2
+  ✓ Activo Profile 2
      C:\Users\Idat\AppData\Local\Google\Chrome\User Data\Profile 2\Local Storage\leveldb
 
-Total: 2 profiles, 2 active
+Total: 2 perfiles, 2 activos
 ```
 
-### Start Monitoring
+### Iniciar Monitoreo
 
-**Monitor all profiles (recommended):**
+**Monitorear todos los perfiles (recomendado):**
 ```cmd
 npm run monitor
 ```
 
-**Monitor specific profile:**
+**Monitorear perfil específico:**
 ```cmd
 npm run dev -- monitor "Profile 2"
 ```
 
-### What to Expect
+### Qué Esperar
 
-When monitoring starts, you'll see:
+Cuando el monitoreo inicia, verás:
 ```
-🚀 eva-tk Token Monitor
+🚀 Monitor de Tokens eva-tk
 
-🔍 Monitoring profile: Profile 2
-📂 Path: C:\Users\Idat\AppData\Local\...\leveldb
-⏱️  Check interval: 500ms
-💾 Auto-save: enabled
+🔍 Monitoreando perfil: Profile 2
+📂 Ruta: C:\Users\Idat\AppData\Local\...\leveldb
+⏱️  Intervalo de verificación: 500ms
+💾 Auto-guardado: habilitado
 
-⏳ Waiting for eva-tk token...
+⏳ Esperando token eva-tk...
 
-Press Ctrl+C to stop monitoring
+Presiona Ctrl+C para detener el monitoreo
 ```
 
-When a token is captured:
+Cuando se capture un token:
 ```
-🎯 TOKEN CAPTURED!
+🎯 ¡TOKEN CAPTURADO!
 
-📅 Time: 1/20/2025, 3:45:12 PM
-👤 Profile: Profile 2
+📅 Hora: 20/1/2025, 3:45:12 PM
+👤 Perfil: Profile 2
 🔑 Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
-📋 Decoded Information:
-   User: ln6121081
+📋 Información Decodificada:
+   Usuario: ln6121081
    ID Alumno: 1761191
    ID Usuario: 474647
    Sede: LN
    Carrera: IDAT
-   Expires: 1/22/2025, 11:30:00 AM
+   Expira: 22/1/2025, 11:30:00 AM
 
-💾 Token saved automatically
+💾 Token guardado automáticamente
 ```
 
-## 📁 Where Are Tokens Saved?
+## 📁 ¿Dónde se Guardan los Tokens?
 
-Tokens are saved in the `tokens` folder inside your eva-tk directory:
+Los tokens se guardan en la carpeta `tokens` dentro de tu directorio eva-tk:
 
 ```
-C:\Users\YourUsername\Documents\eva-tk\tokens\
-  ├── captured-tokens.json    # History of all tokens
-  └── latest-token.txt        # Most recent token
+C:\Users\TuNombreDeUsuario\Documents\eva-tk\tokens\
+  ├── captured-tokens.json    # Historial de todos los tokens
+  └── latest-token.txt        # Token más reciente
 ```
 
-### View Latest Token
+### Ver Último Token
 
 ```cmd
 npm run dev -- show-latest
 ```
 
-### View All Captured Tokens
+### Ver Todos los Tokens Capturados
 
 ```cmd
 npm run dev -- history
 ```
 
-## 🔧 Common Commands
+## 🔧 Comandos Comunes
 
-### Monitor Commands
+### Comandos de Monitoreo
 
 ```cmd
-# Monitor all profiles
+# Monitorear todos los perfiles
 npm run monitor
 
-# Monitor specific profile
+# Monitorear perfil específico
 npm run dev -- monitor "Profile 2"
 
-# Monitor with verbose output
+# Monitorear con salida detallada
 npm run dev -- monitor --verbose
 
-# Monitor with 1-second interval
+# Monitorear con intervalo de 1 segundo
 npm run dev -- monitor --interval 1000
 
-# Monitor without auto-saving
+# Monitorear sin auto-guardado
 npm run dev -- monitor --no-save
 ```
 
-### Extract Commands
+### Comandos de Extracción
 
 ```cmd
-# Try to extract token now (one-time)
+# Intentar extraer token ahora (una vez)
 npm run extract
 
-# Try all profiles
+# Intentar todos los perfiles
 npm run dev -- extract --all
 
-# Extract and save
+# Extraer y guardar
 npm run dev -- extract --save
 ```
 
-### Utility Commands
+### Comandos de Utilidad
 
 ```cmd
-# List Chrome profiles
+# Listar perfiles de Chrome
 npm run dev -- profiles
 
-# Decode a token
+# Decodificar un token
 npm run dev -- decode eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
-# Show latest captured token
+# Mostrar último token capturado
 npm run dev -- show-latest
 
-# Show capture history
+# Mostrar historial de capturas
 npm run dev -- history
 ```
 
-## 🐛 Troubleshooting
+## 🐛 Resolución de Problemas
 
-### "No Chrome profiles found"
+### "No se encontraron perfiles de Chrome"
 
-**Check Chrome installation:**
+**Verificar instalación de Chrome:**
 ```cmd
-# Verify this path exists
+# Verificar que esta ruta existe
 dir "%LOCALAPPDATA%\Google\Chrome\User Data"
 ```
 
-**If path doesn't exist:**
-- Make sure Chrome is installed
-- Log into Chrome at least once
-- Sync Chrome if using multiple devices
+**Si la ruta no existe:**
+- Asegúrate de que Chrome esté instalado
+- Inicia sesión en Chrome al menos una vez
+- Sincroniza Chrome si usas múltiples dispositivos
 
-### "Token not found"
+### "Token no encontrado"
 
-**Make sure you're logged in:**
-1. Open Chrome
-2. Go to the website that creates the eva-tk token
-3. Log in to your account
-4. Leave the browser open
-5. Run the monitor in another terminal
+**Asegúrate de estar conectado:**
+1. Abre Chrome
+2. Ve al sitio web que crea el token eva-tk
+3. Inicia sesión en tu cuenta
+4. Deja el navegador abierto
+5. Ejecuta el monitor en otra terminal
 
-**Try all profiles:**
+**Intenta todos los perfiles:**
 ```cmd
 npm run dev -- extract --all
 ```
 
-### "Failed to read LevelDB"
+### "Fallo al leer LevelDB"
 
-**Chrome is locking the database:**
+**Chrome está bloqueando la base de datos:**
 
-**Option 1: Use monitor mode (works with locked files)**
+**Opción 1: Usar modo monitor (funciona con archivos bloqueados)**
 ```cmd
 npm run monitor
 ```
 
-**Option 2: Close Chrome completely**
-1. Close all Chrome windows
-2. Check Task Manager (Ctrl+Shift+Esc)
-3. End all Chrome processes
-4. Try extract again:
+**Opción 2: Cerrar Chrome completamente**
+1. Cierra todas las ventanas de Chrome
+2. Verifica el Administrador de Tareas (Ctrl+Shift+Esc)
+3. Finaliza todos los procesos de Chrome
+4. Intenta extraer nuevamente:
    ```cmd
    npm run extract
    ```
 
-### "npm is not recognized"
+### "npm no se reconoce"
 
-**Node.js not installed or not in PATH:**
-1. Reinstall Node.js from https://nodejs.org/
-2. During installation, check "Add to PATH"
-3. Restart your terminal/CMD
-4. Verify: `node --version`
+**Node.js no instalado o no en PATH:**
+1. Reinstala Node.js desde https://nodejs.org/
+2. Durante la instalación, marca "Agregar a PATH"
+3. Reinicia tu terminal/CMD
+4. Verifica: `node --version`
 
-### "Cannot find module"
+### "No se puede encontrar módulo"
 
-**Dependencies not installed:**
+**Dependencias no instaladas:**
 ```cmd
-# Delete node_modules and reinstall
+# Eliminar node_modules y reinstalar
 rmdir /s node_modules
 npm install
 npm run build
 ```
 
-### Profile names keep changing
+### Los nombres de perfil siguen cambiando
 
-**Chrome profile names can change (Profile 1, Profile 2, etc.)**
+**Los nombres de perfil de Chrome pueden cambiar (Profile 1, Profile 2, etc.)**
 
-**Solution: Use --all flag**
+**Solución: Usar flag --all**
 ```cmd
 npm run dev -- monitor --all
 ```
 
-This monitors ALL profiles automatically.
+Esto monitorea TODOS los perfiles automáticamente.
 
-## 💡 Tips and Best Practices
+## 💡 Consejos y Mejores Prácticas
 
-### 1. Keep Monitor Running
+### 1. Mantener el Monitor Ejecutándose
 
-Start the monitor BEFORE logging into the website:
+Inicia el monitor ANTES de iniciar sesión en el sitio web:
 ```cmd
 npm run monitor
 ```
 
-Then log in - the token will be captured immediately.
+Luego inicia sesión - el token será capturado inmediatamente.
 
-### 2. Use Verbose Mode for Debugging
+### 2. Usar Modo Detallado para Depuración
 
 ```cmd
 npm run dev -- monitor --verbose
 ```
 
-Shows all file changes and checks.
+Muestra todos los cambios de archivo y verificaciones.
 
-### 3. Monitor All Profiles
+### 3. Monitorear Todos los Perfiles
 
-If you're not sure which profile:
+Si no estás seguro de qué perfil usar:
 ```cmd
 npm run dev -- monitor --all
 ```
 
-### 4. Check Token Expiration
+### 4. Verificar Expiración del Token
 
 ```cmd
 npm run dev -- show-latest
 ```
 
-Shows when the token expires.
+Muestra cuándo expira el token.
 
-### 5. Copy Token Easily
+### 5. Copiar Token Fácilmente
 
-Tokens are in `tokens\latest-token.txt`
+Los tokens están en `tokens\latest-token.txt`
 
-Open in Notepad:
+Abrir en Notepad:
 ```cmd
 notepad tokens\latest-token.txt
 ```
 
-## 🔐 Security Best Practices
+## 🔐 Mejores Prácticas de Seguridad
 
-### DO NOT Share Your Tokens!
+### ¡NO Compartas Tus Tokens!
 
-Tokens are like passwords. They give access to your account.
+Los tokens son como contraseñas. Dan acceso a tu cuenta.
 
-**Never:**
-- Post tokens online
-- Share tokens in chat/email
-- Commit tokens to git
-- Store tokens in public places
+**Nunca:**
+- Publiques tokens en línea
+- Compartas tokens en chat/email
+- Hagas commit de tokens en git
+- Almacenes tokens en lugares públicos
 
-**The `tokens/` folder is git-ignored by default** - tokens won't be committed.
+**La carpeta `tokens/` está en git-ignore por defecto** - los tokens no se harán commit.
 
-### Secure Your Tokens
+### Asegura Tus Tokens
 
 ```cmd
-# The tokens folder
-C:\Users\YourUsername\Documents\eva-tk\tokens\
+# La carpeta de tokens
+C:\Users\TuNombreDeUsuario\Documents\eva-tk\tokens\
 ```
 
-Make sure only you have access to this folder.
+Asegúrate de que solo tú tengas acceso a esta carpeta.
 
-## 📱 Running on Startup (Optional)
+## 📱 Ejecutar al Inicio (Opcional)
 
-### Create a Batch File
+### Crear un Archivo Batch
 
-Create `start-eva-tk.bat`:
+Crear `start-eva-tk.bat`:
 ```batch
 @echo off
-cd C:\Users\YourUsername\Documents\eva-tk
+cd C:\Users\TuNombreDeUsuario\Documents\eva-tk
 npm run monitor
 pause
 ```
 
-### Create Desktop Shortcut
+### Crear Acceso Directo en Escritorio
 
-1. Right-click on `start-eva-tk.bat`
-2. Send to → Desktop (create shortcut)
-3. Double-click shortcut to start monitoring
+1. Clic derecho en `start-eva-tk.bat`
+2. Enviar a → Escritorio (crear acceso directo)
+3. Doble clic en el acceso directo para iniciar monitoreo
 
-## 🆘 Getting Help
+### ⚠️ ADVERTENCIA: Configuración como Servicio del Sistema
 
-### Check Logs
+**NOTA DE SEGURIDAD IMPORTANTE:**
 
-Most errors are shown in the terminal. Look for:
-- ❌ Error messages
-- ⚠️ Warnings
-- Path issues
+Esta herramienta puede configurarse para ejecutarse automáticamente al inicio del sistema, lo cual demuestra una **vulnerabilidad de persistencia**. Esto es parte de la demostración de seguridad.
 
-### Common Error Messages
+**Métodos para Inicio Automático:**
+
+#### Método 1: Carpeta de Inicio de Windows
+```cmd
+# Copiar el script batch a la carpeta de inicio
+copy start-eva-tk.bat "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\"
+```
+
+#### Método 2: Tarea Programada
+```cmd
+# Crear tarea que se ejecuta al inicio
+schtasks /create /tn "EVA-TK Monitor" /tr "C:\ruta\a\eva-tk\start-eva-tk.bat" /sc onlogon
+```
+
+#### Método 3: Registro de Windows (Avanzado)
+```reg
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run]
+"EVA-TK"="C:\\ruta\\a\\eva-tk\\start-eva-tk.bat"
+```
+
+**⚠️ Implicaciones de Seguridad:**
+
+1. **Persistencia:** El script se ejecuta automáticamente en cada inicio
+2. **Captura Silenciosa:** Captura tokens sin intervención del usuario
+3. **Difícil de Detectar:** Usuarios no técnicos pueden no notar
+4. **Escalación:** No requiere privilegios de administrador
+5. **Exfiltración:** Puede enviar tokens a servidor remoto
+
+**Esta capacidad demuestra por qué el almacenamiento de tokens en localStorage es inseguro.**
+
+## 🆘 Obtener Ayuda
+
+### Verificar Logs
+
+La mayoría de errores se muestran en la terminal. Busca:
+- ❌ Mensajes de error
+- ⚠️ Advertencias
+- Problemas de rutas
+
+### Mensajes de Error Comunes
 
 **"ENOENT: no such file or directory"**
-- Path doesn't exist
-- Check profile name with `npm run dev -- profiles`
+- La ruta no existe
+- Verifica nombre de perfil con `npm run dev -- profiles`
 
 **"EBUSY: resource busy or locked"**
-- Chrome has the database locked
-- Use monitor mode instead of extract
+- Chrome tiene la base de datos bloqueada
+- Usa modo monitor en lugar de extract
 
 **"Cannot read properties of undefined"**
-- Dependencies not built
-- Run `npm run build`
+- Dependencias no compiladas
+- Ejecuta `npm run build`
 
-### Still Having Issues?
+### ¿Sigues Teniendo Problemas?
 
-1. Check this guide again
-2. Verify Node.js is installed: `node --version`
-3. Verify dependencies: `npm install`
-4. Rebuild: `npm run build`
-5. Try monitor mode: `npm run monitor`
+1. Revisa esta guía nuevamente
+2. Verifica que Node.js esté instalado: `node --version`
+3. Verifica dependencias: `npm install`
+4. Recompila: `npm run build`
+5. Intenta modo monitor: `npm run monitor`
 
-## 🚀 Advanced Usage
+## 🚀 Uso Avanzado
 
-### Custom Check Interval
+### Intervalo de Verificación Personalizado
 
 ```cmd
-# Check every 100ms (faster, more CPU)
+# Verificar cada 100ms (más rápido, más CPU)
 npm run dev -- monitor --interval 100
 
-# Check every 2 seconds (slower, less CPU)
+# Verificar cada 2 segundos (más lento, menos CPU)
 npm run dev -- monitor --interval 2000
 ```
 
-### Monitor Specific Path
+### Monitorear Ruta Específica
 
-Edit `src/core/chrome-profile-detector.ts` to add custom paths.
+Edita `src/core/chrome-profile-detector.ts` para agregar rutas personalizadas.
 
-### Export Token to File
+### Exportar Token a Archivo
 
-After capture, copy from:
+Después de la captura, copiar desde:
 ```cmd
 type tokens\latest-token.txt
 ```
 
-## 📚 Next Steps
+## 📚 Próximos Pasos
 
-1. **Familiarize yourself with commands**
-   - Try `npm run dev -- profiles`
-   - Try `npm run dev -- extract --all`
-   - Try `npm run monitor`
+1. **Familiarízate con los comandos**
+   - Prueba `npm run dev -- profiles`
+   - Prueba `npm run dev -- extract --all`
+   - Prueba `npm run monitor`
 
-2. **Set up monitoring workflow**
-   - Start monitor before logging in
-   - Let it capture the token
-   - Stop with Ctrl+C
+2. **Configura flujo de trabajo de monitoreo**
+   - Inicia monitor antes de iniciar sesión
+   - Deja que capture el token
+   - Detén con Ctrl+C
 
-3. **Use the captured token**
-   - Find it in `tokens\latest-token.txt`
-   - Use for your application/automation
+3. **Usa el token capturado**
+   - Encuéntralo en `tokens\latest-token.txt`
+   - Úsalo para tu aplicación/automatización
 
 ---
 
-**Windows-specific tips:**
-- Use Command Prompt or PowerShell (not Git Bash for best compatibility)
-- Paths use backslashes: `C:\Users\...`
-- Use quotes for paths with spaces: `"Profile 2"`
+**Consejos específicos de Windows:**
+- Usa Command Prompt o PowerShell (no Git Bash para mejor compatibilidad)
+- Las rutas usan barras invertidas: `C:\Users\...`
+- Usa comillas para rutas con espacios: `"Profile 2"`
 
-**Happy token capturing!** 🎯
+**¡Feliz captura de tokens!** 🎯
+
+---
+
+## 🔴 ADVERTENCIA FINAL
+
+Esta herramienta es para **PROPÓSITOS EDUCATIVOS Y DE INVESTIGACIÓN DE SEGURIDAD ÚNICAMENTE**.
+
+**Demuestra vulnerabilidades críticas que deben ser corregidas:**
+- Almacenamiento inseguro de tokens en localStorage
+- Falta de protección httpOnly
+- Posibilidad de persistencia y ejecución automática
+- Escalación sin privilegios administrativos
+
+**Úsala éticamente y responsablemente.**
