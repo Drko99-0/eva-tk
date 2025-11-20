@@ -1,0 +1,36 @@
+{
+  "name": "eva-tk",
+  "version": "0.1.0",
+  "description": "Toolkit for capturing and managing eva-tk JWT tokens from Chrome Local Storage",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/cli/index.js",
+    "dev": "tsc && node dist/cli/index.js",
+    "watch": "tsc -w",
+    "monitor": "node dist/cli/index.js monitor",
+    "extract": "node dist/cli/index.js extract"
+  },
+  "keywords": [
+    "eva-tk",
+    "jwt",
+    "chrome",
+    "leveldb",
+    "token-capture"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "level": "^8.0.1",
+    "chokidar": "^3.6.0",
+    "jsonwebtoken": "^9.0.2",
+    "yargs": "^17.7.2",
+    "chalk": "^5.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.5",
+    "@types/yargs": "^17.0.32",
+    "typescript": "^5.3.3"
+  }
+}
