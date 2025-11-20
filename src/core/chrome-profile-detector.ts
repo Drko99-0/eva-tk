@@ -1,27 +1,56 @@
 /**
  * Chrome Profile Detector
- * Automatically detects all Chrome profiles on Windows
+ * Automatically detects all Chrome profiles on Windows, Linux, and macOS
  */
 
 import { existsSync, readdirSync } from 'fs';
 import { join } from 'path';
+import { platform, homedir } from 'os';
 import { ChromeProfile } from '../types/index.js';
 
 /**
- * Default Chrome user data directory on Windows
+ * Get Chrome user data directory paths based on platform
  */
-const CHROME_USER_DATA_PATHS = [
-  join(process.env.LOCALAPPDATA || '', 'Google', 'Chrome', 'User Data'),
-  join(process.env.USERPROFILE || '', 'AppData', 'Local', 'Google', 'Chrome', 'User Data'),
-];
+function getChromeUserDataPaths(): string[] {
+  const platformType = platform();
+  const home = homedir();
+
+  switch (platformType) {
+    case 'win32':
+      // Windows
+      return [
+        join(process.env.LOCALAPPDATA || '', 'Google', 'Chrome', 'User Data'),
+        join(process.env.USERPROFILE || '', 'AppData', 'Local', 'Google', 'Chrome', 'User Data'),
+      ];
+
+    case 'darwin':
+      // macOS
+      return [
+        join(home, 'Library', 'Application Support', 'Google', 'Chrome'),
+      ];
+
+    case 'linux':
+      // Linux
+      return [
+        join(home, '.config', 'google-chrome'),
+        join(home, '.config', 'chromium'),
+        join(home, 'snap', 'chromium', 'common', 'chromium'),
+      ];
+
+    default:
+      return [];
+  }
+}
 
 /**
  * Detects all Chrome profiles on the system
  */
 export class ChromeProfileDetector {
   private userDataPath: string | null = null;
+  private platformType: string;
 
   constructor() {
+    this.platformType = platform();
     this.findUserDataPath();
   }
 
@@ -29,7 +58,9 @@ export class ChromeProfileDetector {
    * Find the Chrome User Data directory
    */
   private findUserDataPath(): void {
-    for (const path of CHROME_USER_DATA_PATHS) {
+    const paths = getChromeUserDataPaths();
+
+    for (const path of paths) {
       if (existsSync(path)) {
         this.userDataPath = path;
         return;
@@ -112,6 +143,43 @@ export class ChromeProfileDetector {
    */
   public getUserDataPath(): string | null {
     return this.userDataPath;
+  }
+
+  /**
+   * Get platform name for display
+   */
+  public getPlatformName(): string {
+    switch (this.platformType) {
+      case 'win32':
+        return 'Windows';
+      case 'darwin':
+        return 'macOS';
+      case 'linux':
+        return 'Linux';
+      default:
+        return this.platformType;
+    }
+  }
+
+  /**
+   * Get helpful error message when Chrome is not found
+   */
+  public getInstallationGuidance(): string {
+    const paths = getChromeUserDataPaths();
+
+    let message = `Chrome installation not detected on ${this.getPlatformName()}.\n\n`;
+    message += 'Expected Chrome data locations:\n';
+
+    paths.forEach((path) => {
+      message += `  • ${path}\n`;
+    });
+
+    message += '\nPossible solutions:\n';
+    message += '  1. Install Google Chrome or Chromium\n';
+    message += '  2. Make sure Chrome has been opened at least once\n';
+    message += '  3. Check if Chrome data is in a custom location\n';
+
+    return message;
   }
 
   /**
