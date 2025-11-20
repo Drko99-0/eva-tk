@@ -17,7 +17,7 @@ export class TokenMonitor {
   private reader: LevelDBReader;
   private storage: TokenStorage;
   private decoder: JWTDecoder;
-  private lastToken: string | null = null;
+  private seenTokens: Set<string> = new Set(); // Track all seen tokens
   private isMonitoring: boolean = false;
 
   constructor(verbose: boolean = false) {
@@ -96,6 +96,7 @@ export class TokenMonitor {
 
   /**
    * Check for token in the database
+   * MODIFIED: Now handles multiple tokens
    */
   private async checkForToken(
     profile: ChromeProfile,
@@ -105,34 +106,39 @@ export class TokenMonitor {
     try {
       const result = await this.reader.extractToken(profile.localStoragePath);
 
-      if (result.success && result.token) {
-        // Check if this is a new token
-        if (result.token !== this.lastToken) {
-          this.lastToken = result.token;
+      if (result.success && (result.token || result.tokens)) {
+        const tokensToCheck = result.tokens || [result.token!];
 
-          const captured: CapturedToken = {
-            token: result.token,
-            capturedAt: new Date(),
-            profile: profile.name,
-          };
+        // Process each token
+        for (const token of tokensToCheck) {
+          // Check if this is a new token (not seen before)
+          if (!this.seenTokens.has(token)) {
+            this.seenTokens.add(token);
 
-          // Decode the token
-          try {
-            captured.decoded = this.decoder.decode(result.token);
-          } catch (error) {
-            // Decoding failed, but we still save the token
+            const captured: CapturedToken = {
+              token: token,
+              capturedAt: new Date(),
+              profile: profile.name,
+            };
+
+            // Decode the token
+            try {
+              captured.decoded = this.decoder.decode(token);
+            } catch (error) {
+              // Decoding failed, but we still save the token
+            }
+
+            // Display the captured token
+            this.displayCapturedToken(captured);
+
+            // Save if auto-save is enabled
+            if (autoSave) {
+              await this.storage.saveToken(captured);
+              console.log('💾 Token saved automatically\n');
+            }
+          } else if (verbose) {
+            console.log(`ℹ️  Token already seen: ${token.substring(0, 30)}...`);
           }
-
-          // Display the captured token
-          this.displayCapturedToken(captured);
-
-          // Save if auto-save is enabled
-          if (autoSave) {
-            await this.storage.saveToken(captured);
-            console.log('💾 Token saved automatically\n');
-          }
-        } else if (verbose) {
-          console.log('ℹ️  Same token detected, skipping...');
         }
       }
     } catch (error) {
