@@ -18,7 +18,7 @@ import { JWTDecoder } from '../utils/jwt-decoder.js';
  * Main CLI application
  */
 async function main() {
-  const argv = await yargs(hideBin(process.argv))
+  await yargs(hideBin(process.argv))
     .scriptName('eva-tk')
     .usage('$0 <command> [options]')
     .command(

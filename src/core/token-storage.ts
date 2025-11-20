@@ -3,7 +3,7 @@
  * Saves captured tokens to secure local storage
  */
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { CapturedToken } from '../types/index.js';
 
