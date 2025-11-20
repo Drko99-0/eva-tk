@@ -20,8 +20,8 @@ export class TokenMonitor {
   private lastToken: string | null = null;
   private isMonitoring: boolean = false;
 
-  constructor() {
-    this.reader = new LevelDBReader();
+  constructor(verbose: boolean = false) {
+    this.reader = new LevelDBReader(verbose);
     this.storage = new TokenStorage();
     this.decoder = new JWTDecoder();
   }
