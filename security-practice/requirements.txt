@@ -1,0 +1,21 @@
+# Requirements for eva-tk Security Practice Toolkit
+# Python 3.7+
+
+# No external dependencies required for basic functionality
+# All scripts use Python standard library
+
+# Optional: For better JSON handling and display
+# These are included in Python standard library, no need to install
+
+# If you want to add web server for testing (optional):
+# flask>=2.0.0
+# werkzeug>=2.0.0
+
+# For enhanced security analysis (optional):
+# cryptography>=3.4.8
+# pyjwt>=2.4.0
+
+# All core scripts work with just Python 3 standard library:
+# - jwt-decoder.py: Uses base64, json, datetime
+# - extract-localstorage.py: Uses os, json, sqlite3, shutil, pathlib
+# - No pip install needed for basic usage
