@@ -1,211 +1,251 @@
-# CLAUDE.md - AI Assistant Guide for eva-tk
+# CLAUDE.md - Guía del Asistente IA para eva-tk
 
-**Last Updated:** 2025-11-19
-**Repository:** Drko99-0/eva-tk
-**Current State:** Early stage / Initial setup
-
----
-
-## 📋 Project Overview
-
-### About eva-tk
-**eva-tk** is a toolkit project currently in its initial development phase. The repository is in early stages with minimal existing code structure.
-
-### Current Status
-- **Stage:** Initial setup
-- **Files:** Minimal (README.md only)
-- **Branch Strategy:** Feature branches with `claude/` prefix
-- **Main Branch:** TBD (not yet established)
+**Última Actualización:** 2025-11-20
+**Repositorio:** Drko99-0/eva-tk
+**Estado Actual:** Desarrollo activo - Proyecto de seguridad educativa
 
 ---
 
-## 🏗️ Repository Structure
+## 📋 Descripción del Proyecto
 
-### Current Structure
+### Acerca de eva-tk
+**eva-tk** es un proyecto de investigación de seguridad que demuestra vulnerabilidades críticas en el almacenamiento de tokens JWT en localStorage. El proyecto incluye herramientas de captura de tokens y documentación educativa sobre seguridad web.
+
+### Estado Actual
+- **Etapa:** Desarrollo activo
+- **Propósito:** Investigación de seguridad y educación
+- **Enfoque:** Demostración de vulnerabilidades en IDAT
+- **Estrategia de Ramas:** Ramas de características con prefijo `claude/`
+- **Rama Principal:** No establecida aún
+
+---
+
+## 🏗️ Estructura del Repositorio
+
+### Estructura Actual
 ```
 eva-tk/
-├── .git/              # Git repository metadata
-├── README.md          # Project readme (minimal content)
-└── CLAUDE.md          # This file - AI assistant guide
+├── .git/                  # Metadatos del repositorio Git
+├── src/                   # Código fuente TypeScript
+│   ├── core/             # Funcionalidad principal
+│   ├── utils/            # Utilidades (decodificador JWT, etc.)
+│   ├── types/            # Definiciones de tipos
+│   └── cli/              # Interfaz de línea de comandos
+├── security-practice/     # Herramientas educativas de seguridad
+│   ├── README.md         # Documentación completa en español
+│   └── INICIO-RAPIDO.md  # Guía rápida en español
+├── tokens/               # Tokens capturados (git-ignorado)
+├── dist/                 # Salida de compilación
+├── README.md             # Documentación principal
+├── CLAUDE.md             # Este archivo - Guía para IA
+└── WINDOWS_INSTALL.md    # Guía de instalación Windows
 ```
 
-### Recommended Future Structure
-As the project develops, consider organizing code as follows:
+### Componentes Principales
 
-```
-eva-tk/
-├── src/               # Source code
-│   ├── core/         # Core functionality
-│   ├── utils/        # Utility functions
-│   ├── models/       # Data models
-│   └── index.ts      # Main entry point
-├── tests/            # Test files
-│   ├── unit/         # Unit tests
-│   └── integration/  # Integration tests
-├── docs/             # Documentation
-├── examples/         # Usage examples
-├── .github/          # GitHub workflows and templates
-├── package.json      # Node.js dependencies (if applicable)
-├── tsconfig.json     # TypeScript config (if applicable)
-├── README.md         # Project documentation
-└── CLAUDE.md         # This guide
-```
+**Código TypeScript:**
+- `chrome-profile-detector.ts` - Detecta perfiles de Chrome
+- `leveldb-reader.ts` - Lee base de datos LevelDB
+- `token-monitor.ts` - Monitoreo en tiempo real
+- `token-storage.ts` - Gestión de almacenamiento
+- `jwt-decoder.ts` - Decodificación de tokens
+
+**Scripts Python (security-practice/):**
+- `find-eva-tk.py` - Buscador de tokens
+- `jwt-decoder.py` - Decodificador JWT
+- `extract-localstorage.py` - Extractor de localStorage
 
 ---
 
-## 🔧 Development Workflow
+## 🔧 Flujo de Trabajo de Desarrollo
 
-### Git Branching Strategy
+### Estrategia de Ramificación Git
 
-#### Branch Naming Convention
-- **Feature branches:** `claude/claude-md-<session-id>`
-- **Current working branch:** `claude/claude-md-mi6nv8keed65v20w-01QrkaEXHyQCRZQ7Fb82ZcBN`
+#### Convención de Nombres de Ramas
+- **Ramas de características:** `claude/<descripcion>-<session-id>`
+- **Rama actual de trabajo:** `claude/fix-todo-mi6rk485gu7qa1ki-01CJ64g6zpLabZbd3Uw2vwTr`
 
-#### Important Git Rules
-1. **ALWAYS** develop on the designated Claude feature branch
-2. **NEVER** push directly to main/master without permission
-3. **ALWAYS** use `git push -u origin <branch-name>` for first push
-4. Branch names MUST start with `claude/` and end with the session ID
-5. Push failures (403) indicate incorrect branch naming
+#### Reglas Importantes de Git
+1. **SIEMPRE** desarrollar en la rama de características designada
+2. **NUNCA** hacer push directo a main/master sin permiso
+3. **SIEMPRE** usar `git push -u origin <nombre-rama>` para el primer push
+4. Los nombres de rama DEBEN comenzar con `claude/` y terminar con el ID de sesión
+5. Fallos de push (403) indican nomenclatura incorrecta de rama
 
-### Commit Guidelines
+### Directrices de Commits
 
-#### Commit Message Format
+#### Formato de Mensajes de Commit
 ```
-<type>: <brief description>
+<tipo>: <descripción breve>
 
-<optional detailed description>
+<descripción detallada opcional>
 
-<optional footer>
+<pie de página opcional>
 ```
 
-**Types:**
-- `feat:` - New feature
-- `fix:` - Bug fix
-- `docs:` - Documentation changes
-- `refactor:` - Code refactoring
-- `test:` - Adding or updating tests
-- `chore:` - Maintenance tasks
-- `style:` - Code formatting
+**Tipos:**
+- `feat:` - Nueva característica
+- `fix:` - Corrección de bug
+- `docs:` - Cambios en documentación
+- `refactor:` - Refactorización de código
+- `test:` - Agregar o actualizar tests
+- `chore:` - Tareas de mantenimiento
+- `style:` - Formateo de código
+- `security:` - Correcciones de seguridad
 
-**Examples:**
+**Ejemplos:**
 ```bash
-feat: add core toolkit initialization
+feat: agregar monitoreo continuo con flag --watch
 
-docs: update README with installation instructions
+docs: actualizar README con vulnerabilidades de IDAT
 
-fix: resolve dependency resolution issue
+fix: resolver problema de lectura de LevelDB en Windows
+
+security: prevenir inyección de comandos en rutas de archivo
 ```
 
-### Network Retry Policy
-For git operations (push/pull/fetch):
-- Retry up to 4 times on network failures
-- Use exponential backoff: 2s, 4s, 8s, 16s
-- Only retry on network errors, not auth or validation errors
+### Política de Reintentos de Red
+Para operaciones git (push/pull/fetch):
+- Reintentar hasta 4 veces en fallos de red
+- Usar backoff exponencial: 2s, 4s, 8s, 16s
+- Solo reintentar en errores de red, no en errores de auth o validación
 
 ---
 
-## 📝 Coding Conventions
+## 📝 Convenciones de Código
 
-### General Principles
-1. **Keep it Simple:** Prefer clarity over cleverness
-2. **DRY:** Don't Repeat Yourself - extract common patterns
-3. **SOLID:** Follow SOLID principles for object-oriented code
-4. **Type Safety:** Use strong typing (TypeScript recommended)
-5. **Error Handling:** Always handle errors gracefully
-6. **Documentation:** Document public APIs and complex logic
+### Principios Generales
+1. **Mantén la Simplicidad:** Prefiere claridad sobre inteligencia
+2. **DRY:** No Te Repitas - extrae patrones comunes
+3. **SOLID:** Sigue principios SOLID para código orientado a objetos
+4. **Seguridad por Diseño:** Siempre considera implicaciones de seguridad
+5. **Manejo de Errores:** Siempre maneja errores con gracia
+6. **Documentación:** Documenta APIs públicas y lógica compleja
 
-### Code Style
+### Estilo de Código
 
-#### Naming Conventions
-- **Files:** kebab-case (`user-service.ts`)
-- **Classes:** PascalCase (`UserService`)
-- **Functions/Methods:** camelCase (`getUserById`)
-- **Constants:** UPPER_SNAKE_CASE (`MAX_RETRY_COUNT`)
-- **Interfaces:** PascalCase with 'I' prefix optional (`IUser` or `User`)
+#### Convenciones de Nomenclatura
+- **Archivos:** kebab-case (`chrome-profile-detector.ts`)
+- **Clases:** PascalCase (`ChromeProfileDetector`)
+- **Funciones/Métodos:** camelCase (`detectProfiles`)
+- **Constantes:** UPPER_SNAKE_CASE (`DEFAULT_CHECK_INTERVAL`)
+- **Interfaces:** PascalCase con prefijo 'I' opcional (`ITokenData` o `TokenData`)
 
-#### File Organization
+#### Organización de Archivos
 ```typescript
-// 1. Imports (external first, then internal)
-import { external } from 'external-package';
-import { internal } from './internal-module';
+// 1. Importaciones (externas primero, luego internas)
+import { Level } from 'level';
+import { ChromeProfile } from './types';
 
-// 2. Constants
+// 2. Constantes
 const DEFAULT_TIMEOUT = 5000;
+const CHROME_USER_DATA_PATH = process.env.LOCALAPPDATA;
 
-// 3. Types/Interfaces
-interface Config {
-  timeout: number;
+// 3. Tipos/Interfaces
+interface TokenCapture {
+  token: string;
+  timestamp: number;
+  profile: string;
 }
 
-// 4. Main code
-export class Service {
-  // implementation
+// 4. Código principal
+export class TokenMonitor {
+  // implementación
 }
 
-// 5. Exports
-export { Config };
+// 5. Exportaciones
+export { TokenCapture };
 ```
 
-#### Error Handling Pattern
+#### Patrón de Manejo de Errores
 ```typescript
 try {
-  // risky operation
+  // operación riesgosa
+  const token = await extractToken(profile);
 } catch (error) {
-  // Log the error
-  console.error('Operation failed:', error);
+  // Registrar el error con contexto
+  console.error('Fallo al extraer token:', {
+    profile,
+    error: error.message,
+    stack: error.stack
+  });
 
-  // Rethrow or handle gracefully
-  throw new Error(`Failed to perform operation: ${error.message}`);
+  // Re-lanzar o manejar con gracia
+  throw new Error(`Fallo al extraer token del perfil ${profile}: ${error.message}`);
 }
 ```
 
-### Security Best Practices
-🔒 **CRITICAL:** Always check for and prevent:
-- Command injection
-- SQL injection
+### Mejores Prácticas de Seguridad
+🔒 **CRÍTICO:** Siempre verificar y prevenir:
+- Inyección de comandos
+- Inyección SQL (si se usa base de datos)
 - XSS (Cross-Site Scripting)
-- Path traversal
-- Insecure deserialization
-- Improper input validation
-- Hardcoded secrets/credentials
+- Traversal de rutas
+- Deserialización insegura
+- Validación de entrada inapropiada
+- Secretos/credenciales hardcodeados
 
-**Never commit:**
+**Nunca hacer commit de:**
 - API keys
-- Passwords
-- Private keys
-- `.env` files with secrets
-- `credentials.json` or similar files
+- Contraseñas
+- Claves privadas
+- Archivos `.env` con secretos
+- `credentials.json` o archivos similares
+- Tokens JWT capturados
+- El directorio `tokens/`
+
+**Siempre validar entrada del usuario:**
+```typescript
+// ❌ MAL - vulnerable a path traversal
+const profilePath = path.join(baseDir, userInput);
+
+// ✅ BIEN - validar y sanitizar
+function validateProfileName(name: string): string {
+  // Solo permitir nombres de perfil válidos
+  if (!/^[a-zA-Z0-9\s]+$/.test(name)) {
+    throw new Error('Nombre de perfil inválido');
+  }
+  // Prevenir path traversal
+  if (name.includes('..') || name.includes('/') || name.includes('\\')) {
+    throw new Error('Caracteres no permitidos en nombre de perfil');
+  }
+  return name;
+}
+```
 
 ---
 
-## 🧪 Testing Guidelines
+## 🧪 Directrices de Testing
 
-### Test Structure
+### Estructura de Tests
 ```
 tests/
-├── unit/           # Fast, isolated tests
-├── integration/    # Tests across modules
-└── fixtures/       # Test data and mocks
+├── unit/              # Tests rápidos, aislados
+├── integration/       # Tests entre módulos
+└── fixtures/          # Datos de prueba y mocks
 ```
 
-### Testing Principles
-1. **Write tests for new features** - Test-driven development encouraged
-2. **Maintain high coverage** - Aim for >80% coverage
-3. **Test edge cases** - Don't just test the happy path
-4. **Use descriptive names** - Test names should explain what they verify
-5. **Keep tests isolated** - No shared state between tests
+### Principios de Testing
+1. **Escribe tests para nuevas características** - TDD recomendado
+2. **Mantén alta cobertura** - Apunta a >80% de cobertura
+3. **Testea casos extremos** - No solo el camino feliz
+4. **Usa nombres descriptivos** - Los nombres de tests deben explicar qué verifican
+5. **Mantén tests aislados** - Sin estado compartido entre tests
 
-### Test Naming Convention
+### Convención de Nombres de Tests
 ```typescript
-describe('UserService', () => {
-  describe('getUserById', () => {
-    it('should return user when valid ID provided', async () => {
-      // test implementation
+describe('ChromeProfileDetector', () => {
+  describe('detectProfiles', () => {
+    it('debería retornar lista de perfiles cuando Chrome está instalado', async () => {
+      // implementación del test
     });
 
-    it('should throw error when user not found', async () => {
-      // test implementation
+    it('debería lanzar error cuando Chrome no está instalado', async () => {
+      // implementación del test
+    });
+
+    it('debería manejar rutas de Windows y Linux correctamente', async () => {
+      // implementación del test
     });
   });
 });
@@ -213,238 +253,275 @@ describe('UserService', () => {
 
 ---
 
-## 🤖 AI Assistant Guidelines
+## 🤖 Directrices para Asistente IA
 
-### Task Planning
-1. **ALWAYS use TodoWrite** - Track all multi-step tasks
-2. **Break down complex tasks** - Create sub-tasks for clarity
-3. **Update status in real-time** - Mark tasks as in_progress/completed immediately
-4. **One task at a time** - Only one task should be in_progress
+### Planificación de Tareas
+1. **SIEMPRE usa TodoWrite** - Rastrea todas las tareas multi-paso
+2. **Descompón tareas complejas** - Crea sub-tareas para claridad
+3. **Actualiza estado en tiempo real** - Marca tareas como in_progress/completed inmediatamente
+4. **Una tarea a la vez** - Solo una tarea debe estar en in_progress
 
-### Code Quality Standards
-1. **Read before writing** - Always read existing files before editing
-2. **Prefer editing over creating** - Modify existing files rather than creating new ones
-3. **No security vulnerabilities** - Review code for OWASP Top 10
-4. **Fix immediately** - If you write insecure code, fix it right away
-5. **Use type safety** - Prefer typed languages and strict type checking
+### Estándares de Calidad de Código
+1. **Lee antes de escribir** - Siempre lee archivos existentes antes de editar
+2. **Prefiere editar sobre crear** - Modifica archivos existentes en lugar de crear nuevos
+3. **Sin vulnerabilidades de seguridad** - Revisa código para OWASP Top 10
+4. **Corrige inmediatamente** - Si escribes código inseguro, corrígelo de inmediato
+5. **Usa seguridad de tipos** - Prefiere lenguajes tipados y verificación estricta de tipos
 
-### Tool Usage Preferences
-1. **File Operations:**
-   - Read files: Use `Read` tool (not `cat`)
-   - Edit files: Use `Edit` tool (not `sed/awk`)
-   - Create files: Use `Write` tool (not `echo >`)
+### Preferencias de Uso de Herramientas
+1. **Operaciones de Archivos:**
+   - Leer archivos: Usa herramienta `Read` (no `cat`)
+   - Editar archivos: Usa herramienta `Edit` (no `sed/awk`)
+   - Crear archivos: Usa herramienta `Write` (no `echo >`)
 
-2. **Search Operations:**
-   - File patterns: Use `Glob` (not `find`)
-   - Content search: Use `Grep` (not `grep/rg`)
-   - Code exploration: Use `Task` with `Explore` agent
+2. **Operaciones de Búsqueda:**
+   - Patrones de archivos: Usa `Glob` (no `find`)
+   - Búsqueda de contenido: Usa `Grep` (no `grep/rg`)
+   - Exploración de código: Usa `Task` con agente `Explore`
 
-3. **Git Operations:**
-   - Always use full commands: `git push -u origin <branch>`
-   - Implement retry logic for network failures
-   - Never skip hooks (no `--no-verify`)
+3. **Operaciones Git:**
+   - Siempre usa comandos completos: `git push -u origin <branch>`
+   - Implementa lógica de reintentos para fallos de red
+   - Nunca omitas hooks (no `--no-verify`)
 
-### Communication Style
-1. **Be concise** - Users see terminal output
-2. **No emojis** - Unless explicitly requested
-3. **No excessive praise** - Be objective and factual
-4. **Use markdown** - Format for readability
-5. **Include file references** - Use `file:line` format
+### Estilo de Comunicación
+1. **Sé conciso** - Los usuarios ven salida de terminal
+2. **Sin emojis** - A menos que se solicite explícitamente
+3. **Sin elogios excesivos** - Sé objetivo y factual
+4. **Usa markdown** - Formato para legibilidad
+5. **Incluye referencias de archivo** - Usa formato `archivo:línea`
 
-### Example File References
-When referencing code, use this format:
+### Ejemplo de Referencias de Archivos
+Al referenciar código, usa este formato:
 ```
-The user authentication is handled in src/auth/service.ts:42
+La autenticación del usuario se maneja en src/core/token-monitor.ts:42
+La decodificación JWT se realiza en src/utils/jwt-decoder.ts:15
 ```
 
 ---
 
-## 📚 Documentation Standards
+## 📚 Estándares de Documentación
 
-### Code Documentation
-1. **Public APIs** - Must have JSDoc/TSDoc comments
-2. **Complex logic** - Add inline comments explaining "why"
-3. **Type definitions** - Document all custom types
-4. **Examples** - Provide usage examples for public APIs
+### Documentación de Código
+1. **APIs Públicas** - Deben tener comentarios JSDoc/TSDoc
+2. **Lógica compleja** - Agrega comentarios inline explicando el "por qué"
+3. **Definiciones de tipos** - Documenta todos los tipos personalizados
+4. **Ejemplos** - Proporciona ejemplos de uso para APIs públicas
 
-### JSDoc Format
+### Formato JSDoc
 ```typescript
 /**
- * Retrieves a user by their unique identifier
+ * Monitorea perfiles de Chrome para tokens eva-tk en tiempo real
  *
- * @param userId - The unique identifier of the user
- * @returns Promise resolving to the user object
- * @throws {NotFoundError} When user doesn't exist
+ * @param profileName - Nombre del perfil a monitorear (ej. "Default", "Profile 2")
+ * @param options - Opciones de configuración del monitor
+ * @returns Promise que se resuelve cuando se captura un token
+ * @throws {ProfileNotFoundError} Cuando el perfil especificado no existe
+ * @throws {LevelDBError} Cuando falla la lectura de la base de datos
  *
  * @example
  * ```ts
- * const user = await getUserById('123');
- * console.log(user.name);
+ * const token = await monitorProfile('Profile 2', {
+ *   interval: 500,
+ *   autoSave: true
+ * });
+ * console.log('Token capturado:', token);
  * ```
  */
-async function getUserById(userId: string): Promise<User> {
-  // implementation
+async function monitorProfile(
+  profileName: string,
+  options: MonitorOptions
+): Promise<string> {
+  // implementación
 }
 ```
 
-### README Sections
-Keep README.md updated with:
-1. Project description
-2. Installation instructions
-3. Quick start guide
-4. API documentation
-5. Contributing guidelines
-6. License information
+### Secciones del README
+Mantener README.md actualizado con:
+1. Descripción del proyecto
+2. Advertencias de seguridad y avisos legales
+3. Instrucciones de instalación
+4. Guía de inicio rápido
+5. Documentación de API
+6. Directrices de contribución
+7. Información de licencia
 
 ---
 
-## 🔄 Continuous Integration
+## 🔄 Integración Continua
 
-### Pre-commit Checks
-Before committing, ensure:
-- [ ] Code compiles/builds successfully
-- [ ] Tests pass
-- [ ] Linting passes
-- [ ] No console.log statements (unless intentional)
-- [ ] No TODO comments (or tracked in issues)
+### Verificaciones Pre-Commit
+Antes de hacer commit, asegurar:
+- [ ] El código compila/construye exitosamente
+- [ ] Los tests pasan
+- [ ] El linting pasa
+- [ ] No hay declaraciones console.log (a menos que sea intencional)
+- [ ] No hay comentarios TODO (o están rastreados en issues)
+- [ ] No se incluyen tokens o datos sensibles
 
-### Automated Workflows
-Consider setting up GitHub Actions for:
-- Running tests on PR
-- Linting and type checking
-- Building artifacts
-- Security scanning
-- Dependency updates
-
----
-
-## 🚀 Deployment Guidelines
-
-### Pre-deployment Checklist
-- [ ] All tests passing
-- [ ] Documentation updated
-- [ ] Changelog updated
-- [ ] Version bumped (semantic versioning)
-- [ ] No breaking changes (or properly documented)
-- [ ] Security audit completed
-
-### Versioning
-Follow [Semantic Versioning](https://semver.org/):
-- **MAJOR:** Breaking changes
-- **MINOR:** New features (backward compatible)
-- **PATCH:** Bug fixes (backward compatible)
+### Workflows Automatizados
+Considerar configurar GitHub Actions para:
+- Ejecutar tests en PRs
+- Linting y verificación de tipos
+- Construir artefactos
+- Escaneo de seguridad
+- Actualizaciones de dependencias
 
 ---
 
-## 🐛 Debugging Tips
+## 🚀 Directrices de Despliegue
 
-### Common Issues
-1. **Import errors** - Check file paths and exports
-2. **Type errors** - Verify type definitions match usage
-3. **Build failures** - Clear cache/node_modules and rebuild
-4. **Test failures** - Check for shared state between tests
+### Checklist Pre-Despliegue
+- [ ] Todos los tests pasando
+- [ ] Documentación actualizada
+- [ ] Changelog actualizado
+- [ ] Versión aumentada (semantic versioning)
+- [ ] Sin cambios breaking (o apropiadamente documentados)
+- [ ] Auditoría de seguridad completada
 
-### Debugging Tools
-- Use `console.log` sparingly (remove before commit)
-- Prefer debugger breakpoints in IDE
-- Use proper logging library for production
-- Enable source maps for better stack traces
-
----
-
-## 📞 Getting Help
-
-### Resources
-- **Repository Issues:** Track bugs and features
-- **Pull Requests:** Code review and collaboration
-- **Documentation:** Keep docs/ folder updated
-
-### For AI Assistants
-- If task unclear, ask user for clarification
-- If blocked by hooks, ask user to check configuration
-- If uncertain about approach, present options to user
-- Always verify assumptions before making changes
+### Versionado
+Seguir [Semantic Versioning](https://semver.org/):
+- **MAJOR:** Cambios breaking
+- **MINOR:** Nuevas características (retrocompatibles)
+- **PATCH:** Correcciones de bugs (retrocompatibles)
 
 ---
 
-## 🎯 Current Priorities
+## 🐛 Consejos de Debugging
 
-### Immediate Next Steps
-1. **Define project scope** - Clarify what eva-tk will be
-2. **Set up project structure** - Create recommended directory layout
-3. **Choose technology stack** - Decide on languages/frameworks
-4. **Initialize package manager** - Set up npm/yarn/pnpm if needed
-5. **Configure tooling** - Set up linting, formatting, testing
-6. **Write comprehensive README** - Document project goals
+### Problemas Comunes
+1. **Errores de importación** - Verifica rutas de archivo y exports
+2. **Errores de tipo** - Verifica que las definiciones de tipo coincidan con el uso
+3. **Fallos de build** - Limpia cache/node_modules y reconstruye
+4. **Fallos de tests** - Verifica estado compartido entre tests
 
-### Future Considerations
-- Set up CI/CD pipeline
-- Add code coverage reporting
-- Configure automated releases
-- Set up issue/PR templates
-- Add contributing guidelines
-- Choose and add license
+### Herramientas de Debugging
+- Usa `console.log` con moderación (elimina antes de commit)
+- Prefiere breakpoints del debugger en IDE
+- Usa biblioteca de logging apropiada para producción
+- Habilita source maps para mejores stack traces
 
 ---
 
-## 📜 Change Log
+## 📞 Obtener Ayuda
 
-### 2025-11-19 - Initial Creation
-- Created comprehensive CLAUDE.md guide
-- Established coding conventions and guidelines
-- Documented git workflow and branching strategy
-- Set up AI assistant guidelines and best practices
+### Recursos
+- **Issues del Repositorio:** Rastrea bugs y características
+- **Pull Requests:** Revisión de código y colaboración
+- **Documentación:** Mantén carpeta docs/ actualizada
+
+### Para Asistentes IA
+- Si la tarea no está clara, pide clarificación al usuario
+- Si bloqueado por hooks, pide al usuario verificar configuración
+- Si no estás seguro del enfoque, presenta opciones al usuario
+- Siempre verifica suposiciones antes de hacer cambios
 
 ---
 
-## 🔖 Quick Reference
+## 🎯 Prioridades Actuales
 
-### Essential Commands
+### Próximos Pasos Inmediatos
+1. **Mantener funcionalidad de captura de tokens** - Asegurar que todas las características funcionen
+2. **Mejorar documentación de seguridad** - Expandir guías educativas
+3. **Agregar más navegadores** - Soporte para Firefox, Edge, Brave
+4. **Mejorar manejo de errores** - Mensajes de error más informativos
+5. **Agregar más tests** - Aumentar cobertura de tests
+
+### Consideraciones Futuras
+- Configurar pipeline CI/CD
+- Agregar reporte de cobertura de código
+- Configurar releases automatizados
+- Configurar templates de issues/PR
+- Agregar directrices de contribución
+- Elegir y agregar licencia
+
+---
+
+## 📜 Registro de Cambios
+
+### 2025-11-20 - Actualización Mayor
+- Traducción completa de documentación al español
+- Agregada sección detallada de vulnerabilidades de IDAT en README
+- Actualizada guía CLAUDE.md con mejores prácticas de seguridad
+- Mejoradas directrices para asistentes IA
+
+### 2025-11-19 - Creación Inicial
+- Creada guía CLAUDE.md comprensiva
+- Establecidas convenciones de código y directrices
+- Documentado flujo de trabajo git y estrategia de ramificación
+- Configuradas directrices para asistente IA y mejores prácticas
+
+---
+
+## 🔖 Referencia Rápida
+
+### Comandos Esenciales
 ```bash
-# Check status
+# Verificar estado
 git status
 
-# Create new branch
-git checkout -b claude/feature-name-<session-id>
+# Crear nueva rama
+git checkout -b claude/nombre-caracteristica-<session-id>
 
-# Commit changes
+# Hacer commit de cambios
 git add .
-git commit -m "type: description"
+git commit -m "tipo: descripción"
 
-# Push to remote
-git push -u origin <branch-name>
+# Push al remoto
+git push -u origin <nombre-rama>
 
-# Pull latest changes
-git pull origin <branch-name>
+# Pull de últimos cambios
+git pull origin <nombre-rama>
+
+# Construir proyecto
+npm run build
+
+# Ejecutar monitoreo
+npm run monitor
+
+# Ejecutar tests
+npm test
 ```
 
-### File References Format
+### Formato de Referencias de Archivos
 ```
-file_path:line_number
-Example: src/core/service.ts:125
+ruta_archivo:numero_linea
+Ejemplo: src/core/token-monitor.ts:125
 ```
 
-### Todo List Usage
-Always use TodoWrite for:
-- Multi-step tasks (3+ steps)
-- Complex implementations
-- User-provided task lists
-- Tracking progress through workflows
+### Uso de Lista de Tareas
+Siempre usa TodoWrite para:
+- Tareas multi-paso (3+ pasos)
+- Implementaciones complejas
+- Listas de tareas proporcionadas por usuario
+- Rastrear progreso a través de workflows
 
 ---
 
-## ✅ Checklist for AI Assistants
+## ✅ Checklist para Asistentes IA
 
-Before completing any task:
-- [ ] Used TodoWrite to plan and track work
-- [ ] Read existing files before editing
-- [ ] Followed git branching conventions
-- [ ] Checked for security vulnerabilities
-- [ ] Updated documentation if needed
-- [ ] Ran tests (if applicable)
-- [ ] Committed with clear message
-- [ ] Pushed to correct branch
+Antes de completar cualquier tarea:
+- [ ] Usé TodoWrite para planificar y rastrear trabajo
+- [ ] Leí archivos existentes antes de editar
+- [ ] Seguí convenciones de ramificación git
+- [ ] Verifiqué vulnerabilidades de seguridad
+- [ ] Actualicé documentación si era necesario
+- [ ] Ejecuté tests (si aplica)
+- [ ] Hice commit con mensaje claro
+- [ ] Hice push a la rama correcta
 
 ---
 
-**Note:** This document should be updated as the project evolves. Keep it synchronized with actual project structure and conventions.
+## 🔐 Consideraciones Especiales de Seguridad
+
+Este proyecto es una **herramienta de seguridad educativa**. Al trabajar en él:
+
+1. **Nunca mejores capacidades maliciosas** - Solo documenta, analiza, reporta
+2. **Enfócate en educación** - El propósito es enseñar seguridad web
+3. **Documenta vulnerabilidades** - Ayuda a mejorar sistemas, no a explotarlos
+4. **Sigue divulgación responsable** - Reporta problemas apropiadamente
+5. **Protege datos sensibles** - Nunca expongas tokens reales o información de usuario
+
+---
+
+**Nota:** Este documento debe actualizarse conforme el proyecto evoluciona. Manténlo sincronizado con la estructura de proyecto actual y convenciones.
