@@ -78,6 +78,12 @@ async function main() {
             describe: 'Save extracted token',
             type: 'boolean',
             default: false,
+          })
+          .option('verbose', {
+            alias: 'v',
+            describe: 'Enable verbose output for debugging',
+            type: 'boolean',
+            default: false,
           });
       },
       async (argv) => {
@@ -121,6 +127,26 @@ async function main() {
         await handleHistory();
       }
     )
+    .command(
+      'debug [profile]',
+      'Debug token extraction - shows detailed search process',
+      (yargs) => {
+        return yargs
+          .positional('profile', {
+            describe: 'Chrome profile name to debug',
+            type: 'string',
+          })
+          .option('all', {
+            alias: 'a',
+            describe: 'Debug all Chrome profiles',
+            type: 'boolean',
+            default: false,
+          });
+      },
+      async (argv) => {
+        await handleDebug(argv);
+      }
+    )
     .demandCommand(1, 'You must provide a command')
     .help()
     .alias('help', 'h')
@@ -137,7 +163,7 @@ async function handleMonitor(argv: any) {
   console.log(chalk.cyan('\n🚀 eva-tk Token Monitor\n'));
 
   const detector = new ChromeProfileDetector();
-  const monitor = new TokenMonitor();
+  const monitor = new TokenMonitor(argv.verbose);
 
   try {
     if (argv.all) {
@@ -200,7 +226,7 @@ async function handleExtract(argv: any) {
   console.log(chalk.cyan('\n🔍 Extracting eva-tk Token\n'));
 
   const detector = new ChromeProfileDetector();
-  const reader = new LevelDBReader();
+  const reader = new LevelDBReader(argv.verbose);
   const storage = new TokenStorage();
   const decoder = new JWTDecoder();
 
@@ -392,6 +418,97 @@ async function handleHistory() {
 
       console.log('');
     });
+  } catch (error) {
+    console.error(chalk.red(`❌ Error: ${error instanceof Error ? error.message : String(error)}`));
+    process.exit(1);
+  }
+}
+
+/**
+ * Handle debug command
+ */
+async function handleDebug(argv: any) {
+  console.log(chalk.cyan('\n🔍 Debug Mode - Detailed Token Extraction\n'));
+  console.log(chalk.gray('This will show the complete search process for troubleshooting\n'));
+
+  const detector = new ChromeProfileDetector();
+  const reader = new LevelDBReader(true); // Always verbose in debug mode
+
+  try {
+    if (argv.all) {
+      // Debug all profiles
+      const profiles = detector.getAllProfiles();
+
+      if (profiles.length === 0) {
+        console.log(chalk.red('❌ No Chrome profiles found'));
+        return;
+      }
+
+      console.log(chalk.white(`Found ${profiles.length} profile(s) to debug:\n`));
+
+      for (const profile of profiles) {
+        console.log(chalk.bold(`\n━━━ Profile: ${profile.name} ━━━`));
+        console.log(chalk.gray(`Path: ${profile.localStoragePath}`));
+        console.log(chalk.gray(`Exists: ${profile.exists ? 'Yes' : 'No'}\n`));
+
+        if (!profile.exists) {
+          console.log(chalk.yellow('  Skipping (no Local Storage directory)\n'));
+          continue;
+        }
+
+        const result = await reader.extractToken(profile.localStoragePath);
+
+        if (result.success && result.token) {
+          console.log(chalk.green('\n✓ TOKEN FOUND!\n'));
+          console.log(chalk.white(`Token: ${result.token}\n`));
+
+          const decoder = new JWTDecoder();
+          decoder.prettyPrint(result.token);
+        } else {
+          console.log(chalk.red(`\n✗ No token found: ${result.error}\n`));
+        }
+      }
+    } else {
+      // Debug specific profile
+      let profileName = argv.profile || 'Default';
+      const profile = detector.getProfile(profileName);
+
+      if (!profile || !profile.exists) {
+        // Try to find first active profile
+        const activeProfiles = detector.getActiveProfiles();
+
+        if (activeProfiles.length === 0) {
+          console.log(chalk.red('❌ No Chrome profiles with Local Storage found'));
+          console.log(chalk.yellow('\nTry running: npm run dev -- profiles'));
+          return;
+        }
+
+        console.log(chalk.yellow(`⚠️  Profile "${profileName}" not found, using "${activeProfiles[0].name}"\n`));
+        profileName = activeProfiles[0].name;
+      }
+
+      const activeProfile = detector.getProfile(profileName)!;
+
+      console.log(chalk.bold(`Profile: ${activeProfile.name}`));
+      console.log(chalk.gray(`Path: ${activeProfile.localStoragePath}\n`));
+
+      const result = await reader.extractToken(activeProfile.localStoragePath);
+
+      if (result.success && result.token) {
+        console.log(chalk.green('\n✓ TOKEN FOUND!\n'));
+        console.log(chalk.white(`Token: ${result.token}\n`));
+
+        const decoder = new JWTDecoder();
+        decoder.prettyPrint(result.token);
+      } else {
+        console.log(chalk.red(`\n✗ No token found: ${result.error}\n`));
+        console.log(chalk.yellow('💡 Troubleshooting tips:'));
+        console.log('  1. Make sure you are logged into the application that sets eva-tk');
+        console.log('  2. The token might have expired (they last ~5 seconds)');
+        console.log('  3. Try running: npm run dev -- extract --all');
+        console.log('  4. Try monitor mode: npm run dev -- monitor --all --verbose\n');
+      }
+    }
   } catch (error) {
     console.error(chalk.red(`❌ Error: ${error instanceof Error ? error.message : String(error)}`));
     process.exit(1);

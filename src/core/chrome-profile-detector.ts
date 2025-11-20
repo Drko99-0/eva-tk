@@ -48,24 +48,43 @@ export class ChromeProfileDetector {
     const profiles: ChromeProfile[] = [];
 
     try {
-      const entries = readdirSync(this.userDataPath);
+      const entries = readdirSync(this.userDataPath, { withFileTypes: true });
 
       for (const entry of entries) {
-        // Check for "Default" profile and "Profile X" patterns
-        if (entry === 'Default' || entry.startsWith('Profile ')) {
-          const profilePath = join(this.userDataPath, entry);
-          const localStoragePath = join(profilePath, 'Local Storage', 'leveldb');
+        // Check for directories that look like Chrome profiles
+        // Profiles can be: "Default", "Profile 1", "Profile 2", "Profile 3", etc.
+        if (entry.isDirectory()) {
+          const isProfileDir =
+            entry.name === 'Default' ||
+            entry.name.startsWith('Profile ') ||
+            /^Profile\d+$/.test(entry.name);
 
-          const profile: ChromeProfile = {
-            name: entry,
-            path: profilePath,
-            localStoragePath,
-            exists: existsSync(localStoragePath),
-          };
+          if (isProfileDir) {
+            const profilePath = join(this.userDataPath, entry.name);
+            const localStoragePath = join(profilePath, 'Local Storage', 'leveldb');
 
-          profiles.push(profile);
+            const profile: ChromeProfile = {
+              name: entry.name,
+              path: profilePath,
+              localStoragePath,
+              exists: existsSync(localStoragePath),
+            };
+
+            profiles.push(profile);
+          }
         }
       }
+
+      // Sort profiles: Default first, then Profile 1, Profile 2, etc.
+      profiles.sort((a, b) => {
+        if (a.name === 'Default') return -1;
+        if (b.name === 'Default') return 1;
+
+        const aNum = parseInt(a.name.replace('Profile ', '')) || 0;
+        const bNum = parseInt(b.name.replace('Profile ', '')) || 0;
+
+        return aNum - bNum;
+      });
     } catch (error) {
       console.error('Error reading Chrome profiles:', error);
     }
