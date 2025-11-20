@@ -68,6 +68,7 @@ export class LevelDBReader {
 
   /**
    * Strategy 1: Extract token using Level library
+   * MODIFIED: Now extracts ALL tokens instead of stopping at the first one
    */
   private async extractTokenUsingLevel(leveldbPath: string): Promise<ExtractionResult> {
     let db: Level<string, string> | null = null;
@@ -80,6 +81,10 @@ export class LevelDBReader {
       });
 
       await db.open();
+
+      // Collect ALL tokens from ALL entries
+      const allTokens: string[] = [];
+      const seenTokens = new Set<string>(); // Avoid duplicates
 
       // Iterate through all entries
       for await (const [key, value] of db.iterator()) {
@@ -96,27 +101,39 @@ export class LevelDBReader {
           // Extract the token value
           const token = this.extractTokenFromValue(value);
 
-          if (token) {
-            await db.close();
-            return {
-              success: true,
-              token,
-            };
+          if (token && !seenTokens.has(token)) {
+            allTokens.push(token);
+            seenTokens.add(token);
+            if (this.verbose) {
+              console.log(`    ✓ Valid token collected: ${token.substring(0, 50)}...`);
+            }
           }
         }
 
         // Also check in value for JWT pattern
         const tokenInValue = this.extractTokenFromValue(value);
-        if (tokenInValue && key.includes('eva-tk')) {
-          await db.close();
-          return {
-            success: true,
-            token: tokenInValue,
-          };
+        if (tokenInValue && key.includes('eva-tk') && !seenTokens.has(tokenInValue)) {
+          allTokens.push(tokenInValue);
+          seenTokens.add(tokenInValue);
+          if (this.verbose) {
+            console.log(`    ✓ Valid token collected from value: ${tokenInValue.substring(0, 50)}...`);
+          }
         }
       }
 
       await db.close();
+
+      if (allTokens.length > 0) {
+        if (this.verbose) {
+          console.log(`    ✓ Total unique tokens found: ${allTokens.length}`);
+        }
+
+        return {
+          success: true,
+          token: allTokens[0],      // First token for backward compatibility
+          tokens: allTokens,        // All tokens
+        };
+      }
 
       return {
         success: false,
@@ -145,6 +162,7 @@ export class LevelDBReader {
   /**
    * Strategy 2: Extract token by directly reading .ldb and .log files as binary
    * This is more robust and works even when Level library has issues
+   * MODIFIED: Now extracts ALL tokens from ALL files instead of stopping at the first one
    */
   private async extractTokenUsingBinarySearch(leveldbPath: string): Promise<ExtractionResult> {
     try {
@@ -157,6 +175,10 @@ export class LevelDBReader {
       if (this.verbose) {
         console.log(`    Found ${dataFiles.length} data files: ${dataFiles.join(', ')}`);
       }
+
+      // Collect ALL tokens from ALL files
+      const allTokens: string[] = [];
+      const seenTokens = new Set<string>(); // Avoid duplicates
 
       for (const file of dataFiles) {
         const filePath = join(leveldbPath, file);
@@ -178,31 +200,39 @@ export class LevelDBReader {
               console.log(`    Found 'eva-tk' in ${file}!`);
             }
 
-            // Find the position of 'eva-tk'
-            const idx = content.indexOf('eva-tk');
+            // Find ALL positions of 'eva-tk' in the content
+            let startIdx = 0;
+            while (true) {
+              const idx = content.indexOf('eva-tk', startIdx);
+              if (idx === -1) break;
 
-            // Extract a segment around the token name (search before and after)
-            const segmentStart = Math.max(0, idx - 200);
-            const segmentEnd = Math.min(content.length, idx + 2000);
-            const segment = content.substring(segmentStart, segmentEnd);
+              // Extract a segment around the token name (search before and after)
+              const segmentStart = Math.max(0, idx - 200);
+              const segmentEnd = Math.min(content.length, idx + 2000);
+              const segment = content.substring(segmentStart, segmentEnd);
 
-            // Search for JWT tokens in this segment
-            const matches = segment.match(JWT_PATTERN);
+              // Search for JWT tokens in this segment
+              const matches = segment.match(JWT_PATTERN);
 
-            if (matches && matches.length > 0) {
-              if (this.verbose) {
-                console.log(`    Found ${matches.length} JWT token(s) in segment`);
-              }
+              if (matches && matches.length > 0) {
+                if (this.verbose) {
+                  console.log(`    Found ${matches.length} JWT token(s) in segment at position ${idx}`);
+                }
 
-              // Return the first valid JWT token
-              for (const token of matches) {
-                if (this.isValidJWT(token)) {
-                  return {
-                    success: true,
-                    token,
-                  };
+                // Collect ALL valid JWT tokens
+                for (const token of matches) {
+                  if (this.isValidJWT(token) && !seenTokens.has(token)) {
+                    allTokens.push(token);
+                    seenTokens.add(token);
+                    if (this.verbose) {
+                      console.log(`    ✓ Valid token collected: ${token.substring(0, 50)}...`);
+                    }
+                  }
                 }
               }
+
+              // Move to next occurrence
+              startIdx = idx + 1;
             }
           }
         } catch (fileError) {
@@ -212,6 +242,18 @@ export class LevelDBReader {
           // Continue with next file
           continue;
         }
+      }
+
+      if (allTokens.length > 0) {
+        if (this.verbose) {
+          console.log(`    ✓ Total unique tokens found: ${allTokens.length}`);
+        }
+
+        return {
+          success: true,
+          token: allTokens[0],      // First token for backward compatibility
+          tokens: allTokens,        // All tokens
+        };
       }
 
       return {

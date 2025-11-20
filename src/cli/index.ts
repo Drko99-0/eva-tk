@@ -79,6 +79,18 @@ async function main() {
             type: 'boolean',
             default: false,
           })
+          .option('watch', {
+            alias: 'w',
+            describe: 'Keep watching for new tokens (continuous mode)',
+            type: 'boolean',
+            default: false,
+          })
+          .option('interval', {
+            alias: 'i',
+            describe: 'Check interval in ms when using --watch',
+            type: 'number',
+            default: 500,
+          })
           .option('verbose', {
             alias: 'v',
             describe: 'Enable verbose output for debugging',
@@ -220,9 +232,80 @@ async function handleMonitor(argv: any) {
 }
 
 /**
+ * Handle extract command in watch mode (continuous monitoring)
+ */
+async function handleExtractWatch(argv: any) {
+  console.log(chalk.cyan('\n🔍 Extracting eva-tk Token (Watch Mode)\n'));
+  console.log(chalk.gray('Will continue monitoring for new tokens...\n'));
+
+  const detector = new ChromeProfileDetector();
+  const monitor = new TokenMonitor(argv.verbose);
+
+  try {
+    if (argv.all) {
+      // Monitor all profiles
+      const profiles = detector.getActiveProfiles();
+
+      if (profiles.length === 0) {
+        console.log(chalk.red('❌ No Chrome profiles with Local Storage found'));
+        return;
+      }
+
+      console.log(chalk.white(`Monitoring ${profiles.length} profile(s) for new tokens...\n`));
+
+      await monitor.monitorMultipleProfiles(profiles, {
+        interval: argv.interval,
+        autoSave: argv.save,
+        verbose: argv.verbose,
+      });
+    } else {
+      // Monitor specific profile or default
+      let profileName = argv.profile || 'Default';
+      let profile = detector.getProfile(profileName);
+
+      // If not found, try to find first active profile
+      if (!profile || !profile.exists) {
+        const activeProfiles = detector.getActiveProfiles();
+
+        if (activeProfiles.length === 0) {
+          console.log(chalk.red('❌ No Chrome profiles with Local Storage found'));
+          return;
+        }
+
+        profile = activeProfiles[0];
+        console.log(chalk.yellow(`⚠️  Profile "${profileName}" not found, using "${profile.name}"`));
+      }
+
+      await monitor.startMonitoring(profile, {
+        interval: argv.interval,
+        autoSave: argv.save,
+        verbose: argv.verbose,
+      });
+    }
+
+    // Keep process running
+    console.log(chalk.gray('Press Ctrl+C to stop watching\n'));
+
+    // Handle graceful shutdown
+    process.on('SIGINT', async () => {
+      await monitor.stopMonitoring();
+      process.exit(0);
+    });
+  } catch (error) {
+    console.error(chalk.red(`❌ Error: ${error instanceof Error ? error.message : String(error)}`));
+    process.exit(1);
+  }
+}
+
+/**
  * Handle extract command
  */
 async function handleExtract(argv: any) {
+  // If watch mode is enabled, switch to continuous monitoring
+  if (argv.watch) {
+    return await handleExtractWatch(argv);
+  }
+
   console.log(chalk.cyan('\n🔍 Extracting eva-tk Token\n'));
 
   const detector = new ChromeProfileDetector();
@@ -247,23 +330,35 @@ async function handleExtract(argv: any) {
 
         const result = await reader.extractToken(profile.localStoragePath);
 
-        if (result.success && result.token) {
-          console.log(chalk.green(`\n✓ Token found in ${profile.name}\n`));
-          console.log(chalk.white(`Token: ${result.token}\n`));
+        if (result.success && (result.token || result.tokens)) {
+          const tokensToShow = result.tokens || [result.token!];
 
-          // Decode and display
-          const decoded = decoder.decode(result.token);
-          decoder.prettyPrint(result.token);
+          console.log(chalk.green(`\n✓ Found ${tokensToShow.length} token(s) in ${profile.name}\n`));
 
-          // Save if requested
+          // Display each token
+          tokensToShow.forEach((token, index) => {
+            if (tokensToShow.length > 1) {
+              console.log(chalk.bold(`\n━━━ Token #${index + 1} ━━━\n`));
+            }
+            console.log(chalk.white(`Token: ${token}\n`));
+
+            // Decode and display
+            const decoded = decoder.decode(token);
+            decoder.prettyPrint(token);
+
+            // Save if requested
+            if (argv.save) {
+              storage.saveToken({
+                token: token,
+                capturedAt: new Date(),
+                profile: profile.name,
+                decoded,
+              });
+            }
+          });
+
           if (argv.save) {
-            await storage.saveToken({
-              token: result.token,
-              capturedAt: new Date(),
-              profile: profile.name,
-              decoded,
-            });
-            console.log(chalk.green('💾 Token saved\n'));
+            console.log(chalk.green(`\n💾 ${tokensToShow.length} token(s) saved\n`));
           }
 
           found = true;
@@ -286,21 +381,33 @@ async function handleExtract(argv: any) {
 
       const result = await reader.extractToken(profile.localStoragePath);
 
-      if (result.success && result.token) {
-        console.log(chalk.green('✓ Token extracted successfully\n'));
-        console.log(chalk.white(`Token: ${result.token}\n`));
+      if (result.success && (result.token || result.tokens)) {
+        const tokensToShow = result.tokens || [result.token!];
 
-        const decoded = decoder.decode(result.token);
-        decoder.prettyPrint(result.token);
+        console.log(chalk.green(`✓ Extracted ${tokensToShow.length} token(s) successfully\n`));
+
+        // Display each token
+        tokensToShow.forEach((token, index) => {
+          if (tokensToShow.length > 1) {
+            console.log(chalk.bold(`\n━━━ Token #${index + 1} ━━━\n`));
+          }
+          console.log(chalk.white(`Token: ${token}\n`));
+
+          const decoded = decoder.decode(token);
+          decoder.prettyPrint(token);
+
+          if (argv.save) {
+            storage.saveToken({
+              token: token,
+              capturedAt: new Date(),
+              profile: profile.name,
+              decoded,
+            });
+          }
+        });
 
         if (argv.save) {
-          await storage.saveToken({
-            token: result.token,
-            capturedAt: new Date(),
-            profile: profile.name,
-            decoded,
-          });
-          console.log(chalk.green('💾 Token saved\n'));
+          console.log(chalk.green(`\n💾 ${tokensToShow.length} token(s) saved\n`));
         }
       } else {
         console.log(chalk.yellow(`⚠️  ${result.error || 'No token found'}`));
@@ -458,12 +565,20 @@ async function handleDebug(argv: any) {
 
         const result = await reader.extractToken(profile.localStoragePath);
 
-        if (result.success && result.token) {
-          console.log(chalk.green('\n✓ TOKEN FOUND!\n'));
-          console.log(chalk.white(`Token: ${result.token}\n`));
+        if (result.success && (result.token || result.tokens)) {
+          const tokensToShow = result.tokens || [result.token!];
 
-          const decoder = new JWTDecoder();
-          decoder.prettyPrint(result.token);
+          console.log(chalk.green(`\n✓ FOUND ${tokensToShow.length} TOKEN(S)!\n`));
+
+          tokensToShow.forEach((token, index) => {
+            if (tokensToShow.length > 1) {
+              console.log(chalk.bold(`\n━━━ Token #${index + 1} ━━━\n`));
+            }
+            console.log(chalk.white(`Token: ${token}\n`));
+
+            const decoder = new JWTDecoder();
+            decoder.prettyPrint(token);
+          });
         } else {
           console.log(chalk.red(`\n✗ No token found: ${result.error}\n`));
         }
@@ -494,12 +609,20 @@ async function handleDebug(argv: any) {
 
       const result = await reader.extractToken(activeProfile.localStoragePath);
 
-      if (result.success && result.token) {
-        console.log(chalk.green('\n✓ TOKEN FOUND!\n'));
-        console.log(chalk.white(`Token: ${result.token}\n`));
+      if (result.success && (result.token || result.tokens)) {
+        const tokensToShow = result.tokens || [result.token!];
 
-        const decoder = new JWTDecoder();
-        decoder.prettyPrint(result.token);
+        console.log(chalk.green(`\n✓ FOUND ${tokensToShow.length} TOKEN(S)!\n`));
+
+        tokensToShow.forEach((token, index) => {
+          if (tokensToShow.length > 1) {
+            console.log(chalk.bold(`\n━━━ Token #${index + 1} ━━━\n`));
+          }
+          console.log(chalk.white(`Token: ${token}\n`));
+
+          const decoder = new JWTDecoder();
+          decoder.prettyPrint(token);
+        });
       } else {
         console.log(chalk.red(`\n✗ No token found: ${result.error}\n`));
         console.log(chalk.yellow('💡 Troubleshooting tips:'));

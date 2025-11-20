@@ -62,7 +62,8 @@ export interface MonitorOptions {
  */
 export interface ExtractionResult {
   success: boolean;
-  token?: string;
+  token?: string;          // Single token (for backward compatibility)
+  tokens?: string[];       // Multiple tokens (when extracting all)
   profile?: string;
   error?: string;
 }
