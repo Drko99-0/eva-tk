@@ -3,7 +3,7 @@
  * Automatically detects all Chrome profiles on Windows
  */
 
-import { existsSync, readdirSync, statSync } from 'fs';
+import { existsSync, readdirSync } from 'fs';
 import { join } from 'path';
 import { ChromeProfile } from '../types/index.js';
 
