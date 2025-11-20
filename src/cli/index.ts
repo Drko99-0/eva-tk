@@ -15,6 +15,18 @@ import { TokenStorage } from '../core/token-storage.js';
 import { JWTDecoder } from '../utils/jwt-decoder.js';
 
 /**
+ * Check if Chrome is installed and show guidance if not
+ */
+function checkChromeInstallation(detector: ChromeProfileDetector): boolean {
+  if (!detector.getUserDataPath()) {
+    console.log(chalk.red('❌ Chrome not found\n'));
+    console.log(chalk.gray(detector.getInstallationGuidance()));
+    return false;
+  }
+  return true;
+}
+
+/**
  * Main CLI application
  */
 async function main() {
@@ -177,6 +189,11 @@ async function handleMonitor(argv: any) {
   const detector = new ChromeProfileDetector();
   const monitor = new TokenMonitor(argv.verbose);
 
+  // Check if Chrome is installed
+  if (!checkChromeInstallation(detector)) {
+    process.exit(1);
+  }
+
   try {
     if (argv.all) {
       // Monitor all profiles
@@ -240,6 +257,11 @@ async function handleExtractWatch(argv: any) {
 
   const detector = new ChromeProfileDetector();
   const monitor = new TokenMonitor(argv.verbose);
+
+  // Check if Chrome is installed
+  if (!checkChromeInstallation(detector)) {
+    process.exit(1);
+  }
 
   try {
     if (argv.all) {
@@ -312,6 +334,11 @@ async function handleExtract(argv: any) {
   const reader = new LevelDBReader(argv.verbose);
   const storage = new TokenStorage();
   const decoder = new JWTDecoder();
+
+  // Check if Chrome is installed
+  if (!checkChromeInstallation(detector)) {
+    process.exit(1);
+  }
 
   try {
     if (argv.all) {
@@ -428,6 +455,13 @@ async function handleListProfiles() {
   const detector = new ChromeProfileDetector();
 
   try {
+    // Check if Chrome is installed
+    if (!detector.getUserDataPath()) {
+      console.log(chalk.red('❌ Chrome not found\n'));
+      console.log(chalk.gray(detector.getInstallationGuidance()));
+      return;
+    }
+
     const profiles = detector.getAllProfiles();
 
     if (profiles.length === 0) {
@@ -540,6 +574,11 @@ async function handleDebug(argv: any) {
 
   const detector = new ChromeProfileDetector();
   const reader = new LevelDBReader(true); // Always verbose in debug mode
+
+  // Check if Chrome is installed
+  if (!checkChromeInstallation(detector)) {
+    process.exit(1);
+  }
 
   try {
     if (argv.all) {
